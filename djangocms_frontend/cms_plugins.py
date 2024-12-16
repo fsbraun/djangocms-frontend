@@ -26,19 +26,20 @@ class CMSUIPlugin(FrontendEditableAdminMixin, CMSPluginBase):
                     setattr(instance.__class__, key, get_related(key))
         return super().render(context, instance, placeholder)
 
-    def get_plugin_urls(self):
-        from django.urls import re_path
+    if FrontendEditableAdminMixin is not object:
+        def get_plugin_urls(self):
+            from django.urls import re_path
 
-        info = f"{self.model._meta.app_label}_{self.model._meta.model_name}"
+            info = f"{self.model._meta.app_label}_{self.model._meta.model_name}"
 
-        def pat(regex, fn):
-            return re_path(regex, fn, name=f"{info}_{fn.__name__}")
+            def pat(regex, fn):
+                return re_path(regex, fn, name=f"{info}_{fn.__name__}")
 
-        return [
-            pat(r'edit-field/(%s)/([a-z\-]+)/$' % SLUG_REGEXP, self.edit_field),
-        ]
+            return [
+                pat(r'edit-field/(%s)/([a-z\-]+)/$' % SLUG_REGEXP, self.edit_field),
+            ]
 
-    def _get_object_for_single_field(self, object_id, language):
-        from .models import FrontendUIItem
+        def _get_object_for_single_field(self, object_id, language):
+            from .models import FrontendUIItem
 
-        return FrontendUIItem.objects.get(pk=object_id)
+            return FrontendUIItem.objects.get(pk=object_id)
