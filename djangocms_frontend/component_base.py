@@ -12,7 +12,7 @@ from entangled.forms import EntangledModelForm
 from .ui_plugin_base import CMSUIPluginBase
 
 
-def _import_or_empty(module, name):
+def _import_or_empty_class(module, name):
     try:
         return importlib.import_module(module).__dict__[name]
     except (ImportError, KeyError):
@@ -28,7 +28,7 @@ def _get_mixin_classes(mixins: list, suffix: str = "") -> list[type]:
         for mixin in mixins
     ]
 
-    return [_import_or_empty(module, name) for module, name in mixins]
+    return [_import_or_empty_class(module, name) for module, name in mixins]
 
 
 class Slot:
